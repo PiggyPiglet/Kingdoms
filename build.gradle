@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '5.1.0'
+}
+
+group 'me.piggypiglet'
+version '1.0.0'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven {
+        url = 'https://repo.piggypiglet.me/repository/maven-releases'
+    }
+    maven {
+        url = "https://repo.aikar.co/content/groups/aikar/"
+    }
+    maven {
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+}
+
+dependencies {
+    compile 'me.piggypiglet:framework-bukkit:+'
+    compile 'me.piggypiglet:framework-mysql:+'
+
+    compileOnly 'org.bukkit:bukkit:1.12.2-R0.1-SNAPSHOT'
+}
+
+shadowJar {
+    relocate 'co.aikar.idb', 'me.piggypiglet.idb'
+    destinationDirectory = file('server/plugins/')
+}
+
+compileJava.options.encoding = 'UTF-8'

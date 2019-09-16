@@ -1,0 +1,9 @@
+mysql:
+  credentials:
+    user: root
+    password: pass1234
+    db: kingdoms
+    host: 127.0.0.1
+  save-interval: 10 mins
+  tables:
+    - players
