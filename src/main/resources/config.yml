@@ -7,3 +7,4 @@ mysql:
   save-interval: 10 mins
   tables:
     - players
+    - kingdoms
