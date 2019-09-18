@@ -15,10 +15,8 @@ import java.util.List;
 public final class PlayerManager extends MySQLManager<Player> {
     public PlayerManager() {
         super(new PlayersTable());
+        options.autoPopulate(false);
     }
-
-    @Override
-    public void setup() {}
 
     @Override
     protected void populate(List<Player> list) {}
