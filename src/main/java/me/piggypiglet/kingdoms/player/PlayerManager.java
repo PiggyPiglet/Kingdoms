@@ -31,8 +31,14 @@ public final class PlayerManager extends MySQLManager<Player> {
     @Override
     protected KeyTypeInfo configure(KeyTypeInfo.Builder builder) {
         return builder
-                .clazz(UUID.class, players::get)
-                .interfaze(org.bukkit.entity.Player.class, p -> players.get(p.getUniqueId()))
+                .clazz(UUID.class)
+                        .getter(players::get)
+                        .exists(players::containsKey)
+                        .bundle()
+                .interfaze(org.bukkit.entity.Player.class, org.bukkit.entity.Player::getUniqueId)
+                        .getter(players::get)
+                        .exists(players::containsKey)
+                        .bundle()
                 .build();
     }
 

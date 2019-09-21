@@ -27,13 +27,18 @@ public final class KingdomManager extends MySQLManager<Kingdom> {
     @Override
     protected KeyTypeInfo configure(KeyTypeInfo.Builder builder) {
         return builder
-                .clazz(String.class, s -> {
-                    List<Kingdom> kingdoms = items.stream().filter(k -> k.getName().equals(s)).collect(Collectors.toList());
-
-                    return kingdoms.size() > 0 ? kingdoms.get(0) : WILDERNESS;
-                })
-                .clazz(UUID.class, kingdoms::get)
-                .interfaze(Player.class, p -> kingdoms.getOrDefault(p.getUniqueId(), WILDERNESS))
+                .clazz(String.class, s -> items.stream().filter(k -> k.getName().equals(s)).findAny())
+                        .getter(o -> o.orElse(WILDERNESS))
+                        .exists(Optional::isPresent)
+                        .bundle()
+                .clazz(UUID.class)
+                        .getter(kingdoms::get)
+                        .exists(kingdoms::containsKey)
+                        .bundle()
+                .interfaze(Player.class, p -> items.stream().filter(k -> k.getPlayers().contains(p.getUniqueId())).findAny())
+                        .getter(o -> o.orElse(WILDERNESS))
+                        .exists(Optional::isPresent)
+                        .bundle()
                 .build();
     }
 
