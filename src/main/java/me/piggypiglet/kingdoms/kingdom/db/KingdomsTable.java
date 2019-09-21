@@ -20,14 +20,26 @@ public final class KingdomsTable extends Table<Kingdom> {
 
     @Override
     protected Kingdom rowToType(DbRow dbRow) {
-        return new Kingdom(dbRow.getString("name"), Arrays.stream(dbRow.getString("players").split(",")).map(UUID::fromString).collect(Collectors.toList()));
+        return new Kingdom(
+                dbRow.getString("name"),
+                UUID.fromString(dbRow.getString("uuid")),
+                Arrays.stream(dbRow.getString("players").split(",")).map(UUID::fromString).collect(Collectors.toList())
+        );
     }
 
     @Override
     protected KeyValueSet typeToRow(Kingdom kingdom) {
         return KeyValueSet.builder()
                 .key("name").value(kingdom.getName())
-                .key("players").value(kingdom.getPlayers())
+                .key("uuid").value(kingdom.getUuid().toString())
+                .key("players").value(kingdom.getPlayers().stream().map(UUID::toString).collect(Collectors.joining(",")))
+                .build();
+    }
+
+    @Override
+    protected KeyValueSet saveLocation(Kingdom kingdom) {
+        return KeyValueSet.builder()
+                .key("uuid").value(kingdom.getUuid().toString())
                 .build();
     }
 }

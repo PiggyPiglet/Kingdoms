@@ -7,9 +7,9 @@ import me.piggypiglet.framework.user.User;
 import me.piggypiglet.kingdoms.kingdom.KingdomManager;
 import me.piggypiglet.kingdoms.kingdom.objects.Kingdom;
 import me.piggypiglet.kingdoms.player.PlayerManager;
-import org.bukkit.entity.Player;
 
 import java.util.Collections;
+import java.util.UUID;
 
 // ------------------------------
 // Copyright (c) PiggyPiglet 2019
@@ -26,12 +26,27 @@ public final class CreateKingdom extends BukkitCommand {
 
     @Override
     protected boolean execute(User user, String[] args) {
-        Player player = ((BukkitUser) user).getAsPlayer();
+        UUID uuid = ((BukkitUser) user).getAsPlayer().getUniqueId();
 
         if (args.length > 0) {
-            playerManager.
+            if (!kingdomManager.get(args[0]).equals(KingdomManager.WILDERNESS)) {
+                user.sendMessage("There is already a kingdom called %s.", args[0]);
+                return true;
+            }
 
-            kingdomManager.add(new Kingdom(args[0], Collections.singletonList(player.getUniqueId())));
+            if (!playerManager.get(uuid).getKingdom().equals(KingdomManager.WILDERNESS.getUuid())) {
+                user.sendMessage("You are already in a kingdom.");
+                return true;
+            }
+
+            UUID kingdom = UUID.nameUUIDFromBytes((args[0] + uuid).getBytes());
+
+            playerManager.edit(uuid, kingdom);
+            kingdomManager.add(new Kingdom(
+                    args[0],
+                    kingdom,
+                    Collections.singletonList(uuid))
+            );
             user.sendMessage("Made a kingdom called %s with you in it.", args[0]);
 
             return true;

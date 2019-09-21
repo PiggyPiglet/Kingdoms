@@ -21,8 +21,8 @@ repositories {
 }
 
 dependencies {
-    compile 'me.piggypiglet:framework-bukkit:1.1.6'
-    compile 'me.piggypiglet:framework-mysql:1.1.5'
+    compile 'me.piggypiglet:framework-bukkit:1.1.20'
+    compile 'me.piggypiglet:framework-mysql:1.1.21'
 
     compileOnly 'org.bukkit:bukkit:1.12.2-R0.1-SNAPSHOT'
 }

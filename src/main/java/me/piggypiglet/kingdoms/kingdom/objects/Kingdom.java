@@ -10,11 +10,13 @@ import java.util.UUID;
 // https://www.piggypiglet.me
 // ------------------------------
 public final class Kingdom implements SearchUtils.Searchable {
-    private final String name;
-    private final List<UUID> players;
+    private String name;
+    private final UUID uuid;
+    private List<UUID> players;
 
-    public Kingdom(String name, List<UUID> players) {
+    public Kingdom(String name, UUID uuid, List<UUID> players) {
         this.name = name;
+        this.uuid = uuid;
         this.players = players;
     }
 
@@ -25,5 +27,21 @@ public final class Kingdom implements SearchUtils.Searchable {
 
     public List<UUID> getPlayers() {
         return players;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void addPlayer(UUID player) {
+        players.add(player);
+    }
+
+    public void removePlayer(UUID player) {
+        players.remove(player);
     }
 }

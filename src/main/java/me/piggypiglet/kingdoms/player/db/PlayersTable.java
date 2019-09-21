@@ -18,14 +18,22 @@ public final class PlayersTable extends Table<Player> {
 
     @Override
     protected Player rowToType(DbRow dbRow) {
-        return new Player(dbRow.getString("name"), UUID.fromString(dbRow.getString("uuid")));
+        return new Player(dbRow.getString("name"), UUID.fromString(dbRow.getString("uuid")), UUID.fromString(dbRow.getString("kingdom")));
     }
 
     @Override
     protected KeyValueSet typeToRow(Player player) {
         return KeyValueSet.builder()
                 .key("name").value(player.getName())
-                .key("uuid").value(player.getUuid())
+                .key("uuid").value(player.getUuid().toString())
+                .key("kingdom").value(player.getKingdom().toString())
+                .build();
+    }
+
+    @Override
+    protected KeyValueSet saveLocation(Player player) {
+        return KeyValueSet.builder()
+                .key("uuid").value(player.getUuid().toString())
                 .build();
     }
 }

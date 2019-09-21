@@ -1,11 +1,17 @@
 package me.piggypiglet.kingdoms.player;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import me.piggypiglet.framework.managers.objects.KeyTypeInfo;
 import me.piggypiglet.framework.mysql.manager.MySQLManager;
+import me.piggypiglet.kingdoms.kingdom.KingdomManager;
 import me.piggypiglet.kingdoms.player.db.PlayersTable;
 import me.piggypiglet.kingdoms.player.objects.Player;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 // ------------------------------
 // Copyright (c) PiggyPiglet 2019
@@ -13,15 +19,43 @@ import java.util.List;
 // ------------------------------
 @Singleton
 public final class PlayerManager extends MySQLManager<Player> {
+    @Inject private KingdomManager kingdomManager;
+
+    private final Map<UUID, Player> players = new HashMap<>();
+
     public PlayerManager() {
         super(new PlayersTable());
         options.autoPopulate(false);
     }
 
     @Override
-    protected void populate(List<Player> list) {}
+    protected KeyTypeInfo configure(KeyTypeInfo.Builder builder) {
+        return builder
+                .clazz(UUID.class, players::get)
+                .interfaze(org.bukkit.entity.Player.class, p -> players.get(p.getUniqueId()))
+                .build();
+    }
+
+    @Override
+    protected void insert(Player player) {
+        players.put(player.getUuid(), player);
+    }
+
+    @Override
+    protected void delete(Player player) {
+        players.remove(player.getUuid());
+    }
+
+    @Override
+    protected Collection<Player> retrieveAll() {
+        return items;
+    }
+
+    public void edit(UUID player, UUID kingdom) {
+        players.get(player).setKingdom(kingdom);
+    }
 
     public void add(org.bukkit.entity.Player player) {
-        items.add(new Player(player.getName(), player.getUniqueId()));
+        add(new Player(player.getName(), player.getUniqueId(), kingdomManager.get(player).getUuid()));
     }
 }

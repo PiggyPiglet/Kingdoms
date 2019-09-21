@@ -26,7 +26,7 @@ public final class Kingdoms extends JavaPlugin {
                         .key("host").value("mysql.credentials.host")
                         .key("save-interval").value("mysql.save-interval")
                         .key("tables").value("mysql.tables")
-                        .build().toMap())
+                        .build().getMap())
                 .build()
                 .init();
     }
