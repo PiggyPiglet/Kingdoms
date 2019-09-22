@@ -4,6 +4,7 @@ import co.aikar.idb.DbRow;
 import me.piggypiglet.framework.mysql.table.Table;
 import me.piggypiglet.framework.utils.map.KeyValueSet;
 import me.piggypiglet.kingdoms.player.objects.Player;
+import me.piggypiglet.kingdoms.ranks.Ranks;
 
 import java.util.UUID;
 
@@ -21,7 +22,8 @@ public final class PlayersTable extends Table<Player> {
         return new Player(
                 dbRow.getString("name"),
                 UUID.fromString(dbRow.getString("uuid")),
-                UUID.fromString(dbRow.getString("kingdom"))
+                UUID.fromString(dbRow.getString("kingdom")),
+                Ranks.valueOf(dbRow.getString("rank").toUpperCase())
         );
     }
 
@@ -31,6 +33,7 @@ public final class PlayersTable extends Table<Player> {
                 .key("name").value(player.getName())
                 .key("uuid").value(player.getUuid().toString())
                 .key("kingdom").value(player.getKingdom().toString())
+                .key("rank").value(player.getRank().name())
                 .build();
     }
 

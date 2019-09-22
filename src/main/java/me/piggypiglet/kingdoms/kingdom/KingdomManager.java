@@ -1,13 +1,19 @@
 package me.piggypiglet.kingdoms.kingdom;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import me.piggypiglet.framework.managers.objects.KeyTypeInfo;
 import me.piggypiglet.framework.mysql.manager.MySQLManager;
+import me.piggypiglet.framework.task.Task;
 import me.piggypiglet.kingdoms.kingdom.db.KingdomsTable;
 import me.piggypiglet.kingdoms.kingdom.objects.Kingdom;
+import me.piggypiglet.kingdoms.ranks.Ranks;
+import net.jodah.expiringmap.ExpirationPolicy;
+import net.jodah.expiringmap.ExpiringMap;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 // ------------------------------
@@ -16,9 +22,15 @@ import java.util.stream.Collectors;
 // ------------------------------
 @Singleton
 public final class KingdomManager extends MySQLManager<Kingdom> {
-    public static final Kingdom WILDERNESS = new Kingdom("Wilderness", UUID.nameUUIDFromBytes("wilderness".getBytes()), new ArrayList<>());
+    public static final Kingdom WILDERNESS = new Kingdom("Wilderness", UUID.nameUUIDFromBytes("wilderness".getBytes()), new HashMap<>());
+
+    @Inject private Task task;
 
     private final Map<UUID, Kingdom> kingdoms = new HashMap<>();
+    private final Map<UUID, UUID> invites = ExpiringMap.builder()
+            .expiration(60, TimeUnit.SECONDS)
+            .expirationPolicy(ExpirationPolicy.ACCESSED)
+            .build();
 
     public KingdomManager() {
         super(new KingdomsTable());
@@ -35,7 +47,7 @@ public final class KingdomManager extends MySQLManager<Kingdom> {
                         .getter(kingdoms::get)
                         .exists(kingdoms::containsKey)
                         .bundle()
-                .interfaze(Player.class, p -> items.stream().filter(k -> k.getPlayers().contains(p.getUniqueId())).findAny())
+                .interfaze(Player.class, p -> items.stream().filter(k -> k.getPlayers().containsKey(p.getUniqueId())).findAny())
                         .getter(o -> o.orElse(WILDERNESS))
                         .exists(Optional::isPresent)
                         .bundle()
@@ -62,7 +74,20 @@ public final class KingdomManager extends MySQLManager<Kingdom> {
         return items;
     }
 
-    public void addPlayer(UUID kingdom, UUID player) {
-        kingdoms.get(kingdom).addPlayer(player);
+    public void addPlayer(UUID kingdom, UUID player, Ranks rank) {
+        kingdoms.get(kingdom).setPlayer(player, rank);
+    }
+
+    public boolean invite(me.piggypiglet.kingdoms.player.objects.Player player, me.piggypiglet.kingdoms.player.objects.Player target) {
+        if (!invites.containsKey(target.getUuid())) {
+            invites.put(target.getUuid(), player.getKingdom());
+            return true;
+        }
+
+        return false;
+    }
+
+    public Map<UUID, UUID> getInvites() {
+        return invites;
     }
 }

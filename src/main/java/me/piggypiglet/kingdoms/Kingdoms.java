@@ -3,7 +3,9 @@ package me.piggypiglet.kingdoms;
 import me.piggypiglet.framework.Framework;
 import me.piggypiglet.framework.mysql.MySQLAddon;
 import me.piggypiglet.framework.utils.annotations.files.Config;
+import me.piggypiglet.framework.utils.annotations.registerable.RegisterableData;
 import me.piggypiglet.framework.utils.map.KeyValueSet;
+import me.piggypiglet.kingdoms.registerables.RankRegisterable;
 import org.bukkit.plugin.java.JavaPlugin;
 
 // ------------------------------
@@ -16,6 +18,7 @@ public final class Kingdoms extends JavaPlugin {
         Framework.builder()
                 .main(JavaPlugin.class, this)
                 .pckg("me.piggypiglet.kingdoms")
+                .startup(new RegisterableData(RankRegisterable.class))
                 .commandPrefix("kingdoms")
                 .fileDir(getDataFolder().getPath())
                 .file(true, "config", "/config.yml", "config.yml", Config.class)

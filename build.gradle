@@ -23,6 +23,7 @@ repositories {
 dependencies {
     compile 'me.piggypiglet:framework-bukkit:1.1.22'
     compile 'me.piggypiglet:framework-mysql:1.1.22'
+    compile 'net.jodah:expiringmap:0.5.9'
 
     compileOnly 'org.bukkit:bukkit:1.12.2-R0.1-SNAPSHOT'
 }
@@ -30,6 +31,7 @@ dependencies {
 shadowJar {
     relocate 'co.aikar.idb', 'me.piggypiglet.idb'
     destinationDirectory = file('server/plugins/')
+    delete file('server/plugins/Kingdoms/schema.sql')
 }
 
 compileJava.options.encoding = 'UTF-8'

@@ -1,8 +1,9 @@
 package me.piggypiglet.kingdoms.kingdom.objects;
 
 import me.piggypiglet.framework.utils.SearchUtils;
+import me.piggypiglet.kingdoms.ranks.Ranks;
 
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 // ------------------------------
@@ -12,9 +13,9 @@ import java.util.UUID;
 public final class Kingdom implements SearchUtils.Searchable {
     private String name;
     private final UUID uuid;
-    private List<UUID> players;
+    private Map<UUID, Ranks> players;
 
-    public Kingdom(String name, UUID uuid, List<UUID> players) {
+    public Kingdom(String name, UUID uuid, Map<UUID, Ranks> players) {
         this.name = name;
         this.uuid = uuid;
         this.players = players;
@@ -25,7 +26,7 @@ public final class Kingdom implements SearchUtils.Searchable {
         return name;
     }
 
-    public List<UUID> getPlayers() {
+    public Map<UUID, Ranks> getPlayers() {
         return players;
     }
 
@@ -37,8 +38,8 @@ public final class Kingdom implements SearchUtils.Searchable {
         this.name = name;
     }
 
-    public void addPlayer(UUID player) {
-        players.add(player);
+    public void setPlayer(UUID player, Ranks rank) {
+        players.put(player, rank);
     }
 
     public void removePlayer(UUID player) {

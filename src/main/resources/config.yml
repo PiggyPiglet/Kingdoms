@@ -8,3 +8,31 @@ mysql:
   tables:
     - players
     - kingdoms
+permissions:
+  home:
+    - admin
+    - mod
+    - trusted
+    - member
+    - guest
+  build:
+    - admin
+    - mod
+    - trusted
+  interact:
+    - admin
+    - mod
+    - trusted
+  invite:
+    - admin
+    - mod
+    - trusted
+  kick:
+    - admin
+    - mod
+  sethome:
+  rename:
+  assign:
+    - admin
+  claim:
+    - admin

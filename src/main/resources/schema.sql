@@ -3,6 +3,7 @@ CREATE TABLE `players` (
     `name` TINYTEXT NULL,
     `uuid` TINYTEXT NULL,
     `kingdom` TINYTEXT NULL,
+    `rank` TINYTEXT NULL,
     PRIMARY KEY (`id`)
 )
 COLLATE='utf8_general_ci'

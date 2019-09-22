@@ -5,8 +5,10 @@ import com.google.inject.Singleton;
 import me.piggypiglet.framework.managers.objects.KeyTypeInfo;
 import me.piggypiglet.framework.mysql.manager.MySQLManager;
 import me.piggypiglet.kingdoms.kingdom.KingdomManager;
+import me.piggypiglet.kingdoms.kingdom.objects.Kingdom;
 import me.piggypiglet.kingdoms.player.db.PlayersTable;
 import me.piggypiglet.kingdoms.player.objects.Player;
+import me.piggypiglet.kingdoms.ranks.Ranks;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -62,6 +64,13 @@ public final class PlayerManager extends MySQLManager<Player> {
     }
 
     public void add(org.bukkit.entity.Player player) {
-        add(new Player(player.getName(), player.getUniqueId(), kingdomManager.get(player).getUuid()));
+        final UUID uuid = player.getUniqueId();
+        final Kingdom kingdom = kingdomManager.get(player);
+
+        add(new Player(player.getName(), uuid, kingdom.getUuid(), kingdom.getPlayers().getOrDefault(uuid, Ranks.NONE)));
+    }
+
+    public boolean isInWilderness(Player player) {
+        return player.getKingdom().equals(KingdomManager.WILDERNESS.getUuid());
     }
 }
